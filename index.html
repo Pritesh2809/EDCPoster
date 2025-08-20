@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EDC Poster Generator</title>
+  <style>
+    body {
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 10px;
+    }
+    #posterCanvas {
+      border: 2px solid #333;
+      margin-top: 20px;
+      max-width: 100%;
+      touch-action: none; /* Important for mobile gestures */
+    }
+    .btn {
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+    .controls {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>EDC Poster Generator</h2>
+<input type="file" id="uploadImage" accept="image/*" class="btn"/>
+
+<div class="controls">
+  <button id="rotateLeft" class="btn">⟲ Rotate Left</button>
+  <button id="rotateRight" class="btn">⟳ Rotate Right</button>
+  <button id="zoomIn" class="btn">＋ Zoom In</button>
+  <button id="zoomOut" class="btn">－ Zoom Out</button>
+</div>
+
+<button id="downloadBtn" class="btn">Download Poster</button>
+
+<canvas id="posterCanvas" width="800" height="1000"></canvas>
+
+<script>
+  const canvas = document.getElementById("posterCanvas");
+  const ctx = canvas.getContext("2d");
+  const upload = document.getElementById("uploadImage");
+  const downloadBtn = document.getElementById("downloadBtn");
+
+  let userImg = null;
+  let template = new Image();
+  template.crossOrigin = "anonymous";
+  template.src = "https://i.postimg.cc/j5GpnYYz/EDC-Template-1.png";
+
+  // Transformation state
+  let imgX = canvas.width / 2;
+  let imgY = canvas.height / 2;
+  let imgScale = 1;
+  let imgRotation = 0;
+  let isDragging = false;
+  let dragStartX, dragStartY;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (userImg) {
+      ctx.save();
+      ctx.translate(imgX, imgY);
+      ctx.rotate(imgRotation);
+      ctx.scale(imgScale, imgScale);
+      ctx.drawImage(userImg, -userImg.width/2, -userImg.height/2);
+      ctx.restore();
+    }
+
+    // Template always on top
+    ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
+  }
+
+  template.onload = draw;
+
+  // Upload image
+  upload.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      userImg = new Image();
+      userImg.src = ev.target.result;
+      userImg.onload = () => {
+        imgX = canvas.width / 2;
+        imgY = canvas.height / 2;
+        imgScale = 0.5; // fit better
+        imgRotation = 0;
+        draw();
+      };
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Mouse drag
+  canvas.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    dragStartX = e.offsetX - imgX;
+    dragStartY = e.offsetY - imgY;
+  });
+  canvas.addEventListener("mousemove", (e) => {
+    if (isDragging && userImg) {
+      imgX = e.offsetX - dragStartX;
+      imgY = e.offsetY - dragStartY;
+      draw();
+    }
+  });
+  canvas.addEventListener("mouseup", () => isDragging = false);
+  canvas.addEventListener("mouseleave", () => isDragging = false);
+
+  // Touch drag (for mobile)
+  canvas.addEventListener("touchstart", (e) => {
+    if (!userImg) return;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    isDragging = true;
+    dragStartX = touch.clientX - rect.left - imgX;
+    dragStartY = touch.clientY - rect.top - imgY;
+  });
+  canvas.addEventListener("touchmove", (e) => {
+    if (isDragging && userImg) {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      imgX = touch.clientX - rect.left - dragStartX;
+      imgY = touch.clientY - rect.top - dragStartY;
+      draw();
+    }
+  });
+  canvas.addEventListener("touchend", () => isDragging = false);
+
+  // Controls
+  document.getElementById("rotateLeft").addEventListener("click", () => {
+    imgRotation -= Math.PI / 12;
+    draw();
+  });
+  document.getElementById("rotateRight").addEventListener("click", () => {
+    imgRotation += Math.PI / 12;
+    draw();
+  });
+  document.getElementById("zoomIn").addEventListener("click", () => {
+    imgScale *= 1.1;
+    draw();
+  });
+  document.getElementById("zoomOut").addEventListener("click", () => {
+    imgScale *= 0.9;
+    draw();
+  });
+
+  // Download
+  downloadBtn.addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.download = "EDC_poster.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+</script>
+
+</body>
+</html>
