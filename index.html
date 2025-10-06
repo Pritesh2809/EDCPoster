@@ -2,58 +2,227 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <title>EDC Poster Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+      --bg-dark-gradient: linear-gradient(135deg, #1F222E 0%, #373F51 100%);
+      --surface-bg: rgba(255, 255, 255, 0.6);
+      --surface-bg-dark: rgba(29, 33, 46, 0.7);
+      --text-primary: #111;
+      --text-primary-dark: #EAEAEA;
+      --text-secondary: #444;
+      --text-secondary-dark: #A0A0A0;
+      --accent-primary: #5A67D8;
+      --accent-primary-dark: #7f5af0;
+      --accent-secondary: #28a745;
+      --border-color: rgba(200, 200, 220, 0.4);
+      --border-color-dark: rgba(80, 80, 100, 0.5);
+      --shadow-light: rgba(90, 103, 216, 0.3);
+      --shadow-dark: rgba(0, 0, 0, 0.4);
+      --font-family: 'Poppins', 'Segoe UI', sans-serif;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    html {
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-gradient);
+      font-family: var(--font-family);
       min-height: 100vh;
       padding: 20px;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
+      transition: background 0.4s ease;
+      color: var(--text-primary);
+    }
+
+    body.dark-mode {
+      background: var(--bg-dark-gradient);
+      color: var(--text-primary-dark);
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
-      max-width: 900px;
+      background: var(--surface-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 30px 40px;
+      box-shadow: 0 25px 50px -12px var(--shadow-light);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      max-width: 950px;
       width: 100%;
+      animation: fadeIn 0.8s ease-out;
+      transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    body.dark-mode .container {
+      background: var(--surface-bg-dark);
+      border-color: var(--border-color-dark);
+      box-shadow: 0 25px 50px -12px var(--shadow-dark);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Theme Toggle */
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 15px;
+    }
+    .theme-switch {
+      display: inline-block;
+      height: 26px;
+      position: relative;
+      width: 50px;
+    }
+    .theme-switch input { display: none; }
+    .slider {
+      background-color: #ccc;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      background-color: #fff;
+      bottom: 4px;
+      content: "";
+      height: 18px;
+      left: 4px;
+      position: absolute;
+      transition: .4s;
+      width: 18px;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--accent-primary-dark);
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
     }
 
     h1 {
-      color: #333;
-      margin-bottom: 30px;
-      font-size: 2.5rem;
-      font-weight: 300;
+      margin-bottom: 25px;
+      font-size: 2.2rem;
+      font-weight: 600;
       text-align: center;
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: var(--bg-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .upload-section {
-      text-align: center;
-      margin-bottom: 30px;
+    body.dark-mode h1 {
+      background: linear-gradient(135deg, #a78bfa, #7f5af0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .main-content {
+      display: flex;
+      gap: 30px;
+    }
+
+    .controls-panel {
+      flex: 0 0 250px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .canvas-panel {
+      flex: 1;
+    }
+
+    .control-group {
+      background: rgba(255, 255, 255, 0.5);
+      padding: 15px;
+      border-radius: 16px;
+      transition: background 0.4s ease;
+    }
+    body.dark-mode .control-group {
+      background: rgba(0,0,0,0.15);
+    }
+
+    .control-group h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: var(--text-secondary);
+    }
+    body.dark-mode .control-group h3 {
+      color: var(--text-secondary-dark);
+    }
+
+    .btn, .upload-btn-styled {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border: none;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: var(--font-family);
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    body.dark-mode .btn, body.dark-mode .upload-btn-styled {
+      background: #2d3748;
+      color: #EAEAEA;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .btn:hover, .upload-btn-styled:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    body.dark-mode .btn:hover, body.dark-mode .upload-btn-styled:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .btn:active, .upload-btn-styled:active {
+      transform: translateY(0);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
     }
 
     .upload-wrapper {
       position: relative;
-      display: inline-block;
-      margin-bottom: 20px;
     }
-
     #uploadImage {
       position: absolute;
       opacity: 0;
@@ -61,493 +230,438 @@
       height: 100%;
       cursor: pointer;
     }
-
-    .upload-btn {
-      display: inline-block;
-      padding: 15px 30px;
-      background: linear-gradient(45deg, #667eea, #764ba2);
+    .upload-btn-styled {
+      background: var(--accent-primary);
       color: white;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      font-weight: 600;
+    }
+    body.dark-mode .upload-btn-styled {
+      background: var(--accent-primary-dark);
     }
 
-    .upload-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin: 20px 0;
-    }
-
-    .btn {
-      padding: 12px 20px;
-      border: none;
-      background: #f8f9fa;
-      color: #333;
-      cursor: pointer;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-      min-width: 120px;
-    }
-
-    .btn:hover {
-      background: #667eea;
-      color: white;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     .btn-download {
-      background: linear-gradient(45deg, #28a745, #20c997);
+      background: var(--accent-secondary);
       color: white;
       font-weight: 600;
     }
 
-    .btn-download:hover {
-      background: linear-gradient(45deg, #218838, #1ba085);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-    }
-
     .canvas-wrapper {
-      text-align: center;
-      margin-top: 20px;
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 100%; /* Creates a square aspect ratio container */
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.02);
+      border: 1px solid var(--border-color);
+      transition: border-color 0.4s ease, background 0.4s ease;
+    }
+    body.dark-mode .canvas-wrapper {
+      background: rgba(0,0,0,0.2);
+      border-color: var(--border-color-dark);
     }
 
     #posterCanvas {
-      border: 3px solid #dee2e6;
-      border-radius: 15px;
-      max-width: 100%;
-      max-height: 70vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       touch-action: none;
       cursor: grab;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
     }
 
-    #posterCanvas:active {
-      cursor: grabbing;
+    #posterCanvas:active { cursor: grabbing; }
+
+    #canvasPlaceholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--text-secondary);
+      font-weight: 500;
+      pointer-events: none; /* Make it non-interactive */
+    }
+    body.dark-mode #canvasPlaceholder { color: var(--text-secondary-dark); }
+    #canvasPlaceholder svg {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 15px;
+      opacity: 0.5;
     }
 
-    .instructions {
-      background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-      padding: 20px;
-      border-radius: 15px;
-      margin-bottom: 20px;
-      border-left: 4px solid #667eea;
-    }
-
-    .instructions h3 {
-      color: #333;
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-    }
-
-    .instructions p {
-      color: #666;
-      line-height: 1.6;
-      margin-bottom: 8px;
+    .status, .loading {
+      text-align: center;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 0.9rem;
     }
 
     .status {
-      text-align: center;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 10px;
-      font-weight: 500;
+      display: none;
+      border: 1px solid transparent;
     }
-
     .status.success {
       background: rgba(40, 167, 69, 0.1);
       color: #28a745;
-      border: 1px solid rgba(40, 167, 69, 0.3);
+      border-color: rgba(40, 167, 69, 0.3);
+    }
+    body.dark-mode .status.success {
+      background: rgba(40, 167, 69, 0.2);
+      color: #34d399;
+      border-color: rgba(40, 167, 69, 0.4);
+    }
+    .status.error {
+      background: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+      border-color: rgba(220, 53, 69, 0.3);
+    }
+    body.dark-mode .status.error {
+      background: rgba(220, 53, 69, 0.2);
+      color: #f87171;
+      border-color: rgba(220, 53, 69, 0.4);
     }
 
-    .status.info {
-      background: rgba(102, 126, 234, 0.1);
-      color: #667eea;
-      border: 1px solid rgba(102, 126, 234, 0.3);
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        margin: 10px;
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .controls {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .btn {
-        width: 200px;
-      }
-    }
-
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 20px;
-    }
-
+    .loading { display: none; }
     .spinner {
       border: 3px solid #f3f3f3;
-      border-top: 3px solid #667eea;
+      border-top: 3px solid var(--accent-primary);
       border-radius: 50%;
       width: 30px;
       height: 30px;
       animation: spin 1s linear infinite;
       margin: 0 auto 10px;
     }
-
+    body.dark-mode .spinner {
+      border-top-color: var(--accent-primary-dark);
+    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .main-content {
+        flex-direction: column;
+      }
+      .controls-panel {
+        flex: 0 0 auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .control-group {
+        flex: 1 1 200px;
+      }
+      .container {
+        padding: 20px;
+      }
+    }
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      h1 { font-size: 1.8rem; }
+      .controls-panel { flex-direction: column; }
+    }
   </style>
 </head>
-<body>
+<body class="dark-mode">
 <div class="container">
-  <h1>🎒 EDC INSTA CHALLENGE</h1>
-
-  <div class="instructions">
-    <h3>How to use:</h3>
-    <p>1. Upload your photo</p>
-    <p>2. Drag to position, use controls to rotate and zoom</p>
-    <p>3. Download your styled poster!</p>
+  <div class="theme-switch-wrapper">
+    <label class="theme-switch" for="theme-toggle">
+      <input type="checkbox" id="theme-toggle" checked/>
+      <span class="slider round"></span>
+    </label>
   </div>
 
-  <div class="upload-section">
-    <div class="upload-wrapper">
-      <input type="file" id="uploadImage" accept="image/*"/>
-      <div class="upload-btn">📁 Choose Your Photo</div>
+  <h1>EDC Insta Challenge Generator</h1>
+
+  <div class="main-content">
+    <div class="controls-panel">
+
+      <div class="control-group">
+        <h3>1. Your Photo</h3>
+        <div class="upload-wrapper">
+          <input type="file" id="uploadImage" accept="image/*"/>
+          <div class="upload-btn-styled" id="uploadBtnText">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+            <span>Upload Image</span>
+          </div>
+        </div>
+        <div id="loading" class="loading"><div class="spinner"></div>Processing...</div>
+        <div id="status" class="status"></div>
+      </div>
+
+      <div class="control-group">
+        <h3>2. Adjust</h3>
+        <div class="button-grid">
+          <button id="rotateLeft" class="btn" title="Rotate Left">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
+          </button>
+          <button id="rotateRight" class="btn" title="Rotate Right">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" /></svg>
+          </button>
+          <button id="zoomIn" class="btn" title="Zoom In">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" /></svg>
+          </button>
+          <button id="zoomOut" class="btn" title="Zoom Out">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM13.5 10.5h-6" /></svg>
+          </button>
+        </div>
+        <button id="resetBtn" class="btn" style="width:100%; margin-top: 10px;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.181-3.183m-11.664 0a8.25 8.25 0 010-11.664l3.181 3.183m0 0l-3.181-3.183" /></svg>
+          <span>Reset</span>
+        </button>
+      </div>
+
+      <div class="control-group">
+        <h3>3. Download</h3>
+        <button id="downloadBtn" class="btn btn-download">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+          <span>Download Poster</span>
+        </button>
+      </div>
+
     </div>
-    <div id="status" class="status info" style="display: none;"></div>
-  </div>
 
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <p>Processing your image...</p>
-  </div>
-
-  <div class="controls">
-    <button id="rotateLeft" class="btn">⟲ Rotate Left</button>
-    <button id="rotateRight" class="btn">⟳ Rotate Right</button>
-    <button id="zoomIn" class="btn">🔍+ Zoom In</button>
-    <button id="zoomOut" class="btn">🔍- Zoom Out</button>
-    <button id="resetBtn" class="btn">🔄 Reset</button>
-    <button id="downloadBtn" class="btn btn-download">💾 Download Poster</button>
-  </div>
-
-  <div class="canvas-wrapper">
-    <canvas id="posterCanvas"></canvas>
+    <div class="canvas-panel">
+      <div class="canvas-wrapper">
+        <canvas id="posterCanvas"></canvas>
+        <div id="canvasPlaceholder">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+          <p>Your poster will appear here</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-  const canvas = document.getElementById("posterCanvas");
-  const ctx = canvas.getContext("2d");
-  const upload = document.getElementById("uploadImage");
-  const downloadBtn = document.getElementById("downloadBtn");
-  const status = document.getElementById("status");
-  const loading = document.getElementById("loading");
-  const uploadBtn = document.querySelector(".upload-btn");
+  document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById("posterCanvas");
+    const ctx = canvas.getContext("2d");
+    const uploadInput = document.getElementById("uploadImage");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const statusEl = document.getElementById("status");
+    const loadingEl = document.getElementById("loading");
+    const uploadBtnText = document.getElementById("uploadBtnText").querySelector('span');
+    const placeholder = document.getElementById("canvasPlaceholder");
 
-  let userImg = null;
-  let template = new Image();
-  template.crossOrigin = "anonymous";
-  template.src = "https://i.postimg.cc/gk7j0nn5/EDC-Template-1.png";
+    // Image and template setup
+    let userImg = null;
+    const template = new Image();
+    template.crossOrigin = "anonymous";
+    template.src = "https://i.postimg.cc/J0S0RNzQ/EDC-Template-Spons.png"; // Your template URL
 
-  // Transformation state
-  let imgX = 0, imgY = 0;
-  let imgScale = 1, imgRotation = 0;
-  let isDragging = false, dragStartX, dragStartY;
-  let initialScale = 1;
-
-  // Show status message
-  function showStatus(message, type = 'info') {
-    status.textContent = message;
-    status.className = `status ${type}`;
-    status.style.display = 'block';
-    setTimeout(() => {
-      status.style.display = 'none';
-    }, 3000);
-  }
-
-  // Draw everything
-  function draw() {
-    if (!template.complete) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (userImg && userImg.complete) {
-      ctx.save();
-      ctx.translate(imgX, imgY);
-      ctx.rotate(imgRotation);
-      ctx.scale(imgScale, imgScale);
-      ctx.drawImage(userImg, -userImg.width/2, -userImg.height/2);
-      ctx.restore();
-    }
-
-    // Draw template ALWAYS on top
-    ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
-  }
-
-  // Load template and set canvas size
-  template.onload = () => {
-    canvas.width = template.width;
-    canvas.height = template.height;
-    draw();
-    showStatus("Template loaded! Upload your EDC photo to get started.", 'success');
-  };
-
-  template.onerror = () => {
-    showStatus("Error loading template. Please refresh the page.", 'error');
-  };
-
-  // Calculate optimal scale for uploaded image
-  function calculateInitialScale(img) {
-    const maxWidth = canvas.width * 0.8;
-    const maxHeight = canvas.height * 0.8;
-    const scaleX = maxWidth / img.width;
-    const scaleY = maxHeight / img.height;
-    return Math.min(scaleX, scaleY);
-  }
-
-  // Upload image handler
-  upload.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      showStatus("Please select a valid image file.", 'error');
-      return;
-    }
-
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      showStatus("Image too large. Please choose a file under 10MB.", 'error');
-      return;
-    }
-
-    loading.style.display = 'block';
-    uploadBtn.textContent = "Processing...";
-
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      userImg = new Image();
-      userImg.src = ev.target.result;
-      userImg.onload = () => {
-        // Center and scale the image appropriately
-        imgX = canvas.width / 2;
-        imgY = canvas.height / 2;
-        initialScale = calculateInitialScale(userImg);
-        imgScale = initialScale;
-        imgRotation = 0;
-
-        draw();
-        loading.style.display = 'none';
-        uploadBtn.textContent = "📁 Choose Your EDC Photo";
-        showStatus("Image uploaded successfully! Drag to position, use controls to adjust.", 'success');
-      };
-      userImg.onerror = () => {
-        loading.style.display = 'none';
-        uploadBtn.textContent = "📁 Choose Your EDC Photo";
-        showStatus("Error loading image. Please try a different file.", 'error');
-      };
+    // Transformation state
+    const transform = {
+      x: 0,
+      y: 0,
+      scale: 1,
+      rotation: 0,
+      initialScale: 1
     };
-    reader.readAsDataURL(file);
-  });
 
-  // Mouse events
-  canvas.addEventListener("mousedown", (e) => {
-    if (!userImg) return;
-    isDragging = true;
-    const rect = canvas.getBoundingClientRect();
-    dragStartX = e.clientX - rect.left - imgX;
-    dragStartY = e.clientY - rect.top - imgY;
-    canvas.style.cursor = 'grabbing';
-  });
+    // Dragging and pinching state
+    let isDragging = false;
+    let dragStart = { x: 0, y: 0 };
+    let lastPinchDist = 0;
 
-  canvas.addEventListener("mousemove", (e) => {
-    if (isDragging && userImg) {
-      const rect = canvas.getBoundingClientRect();
-      imgX = e.clientX - rect.left - dragStartX;
-      imgY = e.clientY - rect.top - dragStartY;
+    const showStatus = (message, type = 'info', duration = 3000) => {
+      statusEl.textContent = message;
+      statusEl.className = `status ${type}`;
+      statusEl.style.display = 'block';
+      if (duration) {
+        setTimeout(() => { statusEl.style.display = 'none'; }, duration);
+      }
+    };
+
+    const draw = () => {
+      if (!template.complete) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // --- CHANGE: Draw template first as the background ---
+      ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
+
+      // --- CHANGE: Draw user image on TOP of the template ---
+      if (userImg && userImg.complete) {
+        placeholder.style.display = 'none';
+        ctx.save();
+        ctx.translate(transform.x, transform.y);
+        ctx.rotate(transform.rotation);
+        ctx.scale(transform.scale, transform.scale);
+        ctx.drawImage(userImg, -userImg.width / 2, -userImg.height / 2);
+        ctx.restore();
+      } else {
+        // Show placeholder if no user image is loaded yet
+        placeholder.style.display = 'flex';
+      }
+    };
+
+    const resetTransform = () => {
+      if (!userImg) return;
+      transform.x = canvas.width / 2;
+      transform.y = canvas.height / 2;
+      transform.scale = transform.initialScale;
+      transform.rotation = 0;
       draw();
-    }
-  });
+    };
 
-  canvas.addEventListener("mouseup", () => {
-    isDragging = false;
-    canvas.style.cursor = 'grab';
-  });
-
-  canvas.addEventListener("mouseleave", () => {
-    isDragging = false;
-    canvas.style.cursor = 'grab';
-  });
-
-  // Touch events
-  canvas.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    if (!userImg) return;
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    isDragging = true;
-    dragStartX = touch.clientX - rect.left - imgX;
-    dragStartY = touch.clientY - rect.top - imgY;
-  });
-
-  canvas.addEventListener("touchmove", (e) => {
-    e.preventDefault();
-    if (isDragging && userImg) {
-      const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      imgX = touch.clientX - rect.left - dragStartX;
-      imgY = touch.clientY - rect.top - dragStartY;
+    template.onload = () => {
+      const aspectRatio = template.width / template.height;
+      canvas.width = 1080; // Standard Insta post size
+      canvas.height = 1080 / aspectRatio;
       draw();
-    }
-  });
+    };
+    template.onerror = () => showStatus("Error: Could not load poster template.", 'error', null);
 
-  canvas.addEventListener("touchend", (e) => {
-    e.preventDefault();
-    isDragging = false;
-  });
-
-  // Control buttons
-  document.getElementById("rotateLeft").addEventListener("click", () => {
-    if (!userImg) return;
-    imgRotation -= Math.PI / 12; // 15 degrees
-    draw();
-  });
-
-  document.getElementById("rotateRight").addEventListener("click", () => {
-    if (!userImg) return;
-    imgRotation += Math.PI / 12; // 15 degrees
-    draw();
-  });
-
-  document.getElementById("zoomIn").addEventListener("click", () => {
-    if (!userImg) return;
-    imgScale *= 1.1;
-    draw();
-  });
-
-  document.getElementById("zoomOut").addEventListener("click", () => {
-    if (!userImg) return;
-    imgScale *= 0.9;
-    draw();
-  });
-
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    if (!userImg) return;
-    imgX = canvas.width / 2;
-    imgY = canvas.height / 2;
-    imgScale = initialScale;
-    imgRotation = 0;
-    draw();
-    showStatus("Image reset to original position and size.", 'info');
-  });
-
-  downloadBtn.addEventListener("click", () => {
-    if (!userImg) {
-      showStatus("Please upload an image first!", 'error');
-      return;
-    }
-
-    try {
-      // Create an offscreen canvas with full template size
-      const offCanvas = document.createElement("canvas");
-      offCanvas.width = template.width;
-      offCanvas.height = template.height;
-      const offCtx = offCanvas.getContext("2d");
-
-      // Draw user image with same transformations
-      if (userImg.complete) {
-        offCtx.save();
-        offCtx.translate(imgX, imgY);
-        offCtx.rotate(imgRotation);
-        offCtx.scale(imgScale, imgScale);
-        offCtx.drawImage(userImg, -userImg.width/2, -userImg.height/2);
-        offCtx.restore();
+    uploadInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showStatus("Please select a valid image file.", 'error');
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) { // 15MB limit
+        showStatus("Image too large. Please choose a file under 15MB.", 'error');
+        return;
       }
 
-      // Draw template on top
-      offCtx.drawImage(template, 0, 0, offCanvas.width, offCanvas.height);
+      loadingEl.style.display = 'block';
+      uploadBtnText.textContent = "Processing...";
 
-      // Download full image
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        userImg = new Image();
+        userImg.src = event.target.result;
+        userImg.onload = () => {
+          // Calculate initial scale to fit nicely within the canvas
+          const scaleX = canvas.width / userImg.width;
+          const scaleY = canvas.height / userImg.height;
+          transform.initialScale = Math.min(scaleX, scaleY);
+          resetTransform();
+          loadingEl.style.display = 'none';
+          uploadBtnText.textContent = "Upload Image";
+          showStatus("Image loaded! Adjust and download.", 'success');
+        };
+        userImg.onerror = () => {
+          loadingEl.style.display = 'none';
+          uploadBtnText.textContent = "Upload Image";
+          showStatus("Error loading image file. Please try another.", 'error');
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // -- Event Handlers --
+
+    const getEventCoords = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (e.clientX - rect.left) * (canvas.width / rect.width),
+        y: (e.clientY - rect.top) * (canvas.height / rect.height)
+      };
+    };
+
+    const handleDragStart = (e) => {
+      if (!userImg) return;
+      isDragging = true;
+      const coords = getEventCoords(e.touches ? e.touches[0] : e);
+      dragStart.x = coords.x - transform.x;
+      dragStart.y = coords.y - transform.y;
+      canvas.style.cursor = 'grabbing';
+    };
+
+    const handleDragMove = (e) => {
+      if (!isDragging || !userImg) return;
+      const coords = getEventCoords(e.touches ? e.touches[0] : e);
+      transform.x = coords.x - dragStart.x;
+      transform.y = coords.y - dragStart.y;
+      draw();
+    };
+
+    const handleDragEnd = () => {
+      isDragging = false;
+      canvas.style.cursor = 'grab';
+    };
+
+    // Mouse Events
+    canvas.addEventListener("mousedown", handleDragStart);
+    canvas.addEventListener("mousemove", handleDragMove);
+    canvas.addEventListener("mouseup", handleDragEnd);
+    canvas.addEventListener("mouseleave", handleDragEnd);
+
+    // Touch Events
+    canvas.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      if (!userImg) return;
+      if (e.touches.length === 1) {
+        handleDragStart(e);
+      } else if (e.touches.length === 2) {
+        isDragging = false; // Stop dragging if two fingers are down
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        lastPinchDist = Math.sqrt(dx * dx + dy * dy);
+      }
+    });
+
+    canvas.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      if (!userImg) return;
+      if (e.touches.length === 1 && isDragging) {
+        handleDragMove(e);
+      } else if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const currentDist = Math.sqrt(dx * dx + dy * dy);
+        if (lastPinchDist > 0) {
+          const scaleAmount = currentDist / lastPinchDist;
+          transform.scale *= scaleAmount;
+        }
+        lastPinchDist = currentDist;
+        draw();
+      }
+    });
+
+    canvas.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      if (e.touches.length < 2) lastPinchDist = 0;
+      if (e.touches.length < 1) handleDragEnd();
+    });
+
+    // Control Buttons
+    document.getElementById("rotateLeft").addEventListener("click", () => { if(userImg) { transform.rotation -= Math.PI / 12; draw(); }});
+    document.getElementById("rotateRight").addEventListener("click", () => { if(userImg) { transform.rotation += Math.PI / 12; draw(); }});
+    document.getElementById("zoomIn").addEventListener("click", () => { if(userImg) { transform.scale *= 1.1; draw(); }});
+    document.getElementById("zoomOut").addEventListener("click", () => { if(userImg) { transform.scale *= 0.9; draw(); }});
+    document.getElementById("resetBtn").addEventListener("click", () => { if(userImg) { resetTransform(); showStatus("Image position has been reset.", 'success'); }});
+
+    downloadBtn.addEventListener("click", () => {
+      if (!userImg) {
+        showStatus("Please upload an image first!", 'error');
+        return;
+      }
       const link = document.createElement("a");
-      const timestamp = new Date().toISOString().slice(0, 19).replace(/[:]/g, '-');
-      link.download = `EDC_poster_${timestamp}.png`;
-      link.href = offCanvas.toDataURL("image/png", 1.0);
+      link.download = `EDC_Challenge_Poster.png`;
+      link.href = canvas.toDataURL("image/png", 1.0);
       link.click();
+      showStatus("Poster download started!", 'success');
+    });
 
-      showStatus("Poster downloaded successfully!", 'success');
-    } catch (error) {
-      showStatus("Error downloading poster. Please try again.", 'error');
-    }
-  });
-
-
-  // Keyboard shortcuts
-  document.addEventListener("keydown", (e) => {
-    if (!userImg) return;
-
-    switch(e.key) {
-      case 'ArrowLeft':
-        imgX -= 5;
-        draw();
-        break;
-      case 'ArrowRight':
-        imgX += 5;
-        draw();
-        break;
-      case 'ArrowUp':
-        imgY -= 5;
-        draw();
-        break;
-      case 'ArrowDown':
-        imgY += 5;
-        draw();
-        break;
-      case '=':
-      case '+':
-        imgScale *= 1.05;
-        draw();
-        break;
-      case '-':
-        imgScale *= 0.95;
-        draw();
-        break;
-      case 'r':
-        imgRotation += Math.PI / 24; // 7.5 degrees
-        draw();
-        break;
-      case 'l':
-        imgRotation -= Math.PI / 24; // 7.5 degrees
-        draw();
-        break;
-    }
+    // Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('change', function() {
+      document.body.classList.toggle('dark-mode', this.checked);
+    });
   });
 </script>
 </body>
