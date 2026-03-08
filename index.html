@@ -11,14 +11,27 @@ padding:0;
 font-family:Poppins,sans-serif;
 }
 
+html,body{
+height:100%;
+}
+
 body{
 background:linear-gradient(135deg,#ff4d94,#8a2be2);
 display:flex;
-justify-content:center;
+flex-direction:column;
+justify-content:space-between;
 align-items:center;
 min-height:100vh;
 padding:15px;
 color:white;
+margin:0;
+}
+
+.wrapper{
+width:100%;
+display:flex;
+justify-content:center;
+flex:1;
 }
 
 .container{
@@ -57,12 +70,18 @@ border:none;
 border-radius:10px;
 font-weight:600;
 cursor:pointer;
+transition:all 0.3s ease;
 }
 
 .upload{
 background:#ff4d94;
 color:white;
 text-align:center;
+}
+
+.upload:hover{
+background:#ff2d74;
+transform:translateY(-2px);
 }
 
 button{
@@ -72,11 +91,16 @@ color:#333;
 
 button:hover{
 transform:scale(1.03);
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
 
 download{
 background:#28a745;
 color:white;
+}
+
+download:hover{
+background:#218838;
 }
 
 .canvas-box{
@@ -92,23 +116,75 @@ cursor:grab;
 }
 
 footer{
+width:100%;
 text-align:center;
-margin-top:20px;
-padding-top:15px;
-border-top:1px solid rgba(255,255,255,0.2);
+padding:20px 15px;
+border-top:2px solid rgba(255,255,255,0.3);
 font-size:14px;
-opacity:0.8;
+opacity:0.9;
+background:rgba(0,0,0,0.1);
+margin-top:auto;
+word-wrap:break-word;
+overflow-wrap:break-word;
 }
 
 @media(max-width:768px){
 
 .main{
 flex-direction:column;
+gap:15px;
+}
+
+.container{
+padding:15px;
+}
+
+h1{
+font-size:22px;
+margin-bottom:15px;
+}
+
+footer{
+padding:15px 10px;
+font-size:12px;
+border-top:1.5px solid rgba(255,255,255,0.3);
 }
 
 }
 
-</style></head><body><div class="container"><h1>🌸 Women's Day Poster Generator</h1><div class="main"><div class="controls"><input type="file" id="upload" hidden accept="image/*"><div class="upload" onclick="document.getElementById('upload').click()">
+@media(max-width:480px){
+
+.container{
+padding:12px;
+border-radius:15px;
+}
+
+h1{
+font-size:18px;
+margin-bottom:10px;
+}
+
+.controls button,
+.upload{
+padding:10px;
+margin-bottom:8px;
+font-size:13px;
+}
+
+footer{
+padding:12px 8px;
+font-size:11px;
+padding-top:15px;
+padding-bottom:15px;
+}
+
+canvas{
+border-radius:10px;
+}
+
+}
+
+</style></head><body><div class="wrapper"><div class="container"><h1>🌸 Women's Day Poster Generator</h1><div class="main"><div class="controls"><input type="file" id="upload" hidden accept="image/*"><div class="upload" onclick="document.getElementById('upload').click()">
 Upload Photo
 </div><button onclick="zoomIn()">Zoom In</button>
 <button onclick="zoomOut()">Zoom Out</button>
@@ -120,8 +196,7 @@ Upload Photo
 
 </div><div class="canvas-box">
 <canvas id="canvas"></canvas>
-</div></div>
-</div><footer>A Pix Club Creation</footer><script>
+</div></div></div></div><footer>© A Pix Club Creation</footer><script>
 
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
@@ -188,7 +263,6 @@ ctx.drawImage(template,0,0,canvas.width,canvas.height);
 /* draw quote ABOVE ribbon */
 
 ctx.save();
-
 ctx.font="bold 38px Poppins";
 ctx.fillStyle="#ffd1e6";
 ctx.textAlign="center";
@@ -218,7 +292,7 @@ userImg.onload=function(){
 const scaleX=canvas.width/userImg.width;
 const scaleY=canvas.height/userImg.height;
 
-transform.scale=Math.min(scaleX,scaleY);
+ttransform.scale=Math.min(scaleX,scaleY);
 
 draw();
 
@@ -254,12 +328,7 @@ draw();
 let dragging=false;
 let startX,startY;
 
-canvas.addEventListener("mousedown",e=>{
-dragging=true;
-startX=e.offsetX-transform.x;
-startY=e.offsetY-transform.y;
-});
-
+canvas.addEventListener("mousedown",e=>{dragging=true;startX=e.offsetX-transform.x;startY=e.offsetY-transform.y;});
 canvas.addEventListener("mousemove",e=>{
 
 if(!dragging)return;
@@ -270,7 +339,6 @@ transform.y=e.offsetY-startY;
 draw();
 
 });
-
 canvas.addEventListener("mouseup",()=>dragging=false);
 canvas.addEventListener("mouseleave",()=>dragging=false);
 
@@ -290,7 +358,6 @@ startX=x-transform.x;
 startY=y-transform.y;
 
 });
-
 canvas.addEventListener("touchmove",e=>{
 
 if(!dragging)return;
@@ -306,7 +373,6 @@ transform.y=y-startY;
 draw();
 
 });
-
 canvas.addEventListener("touchend",()=>dragging=false);
 
 
