@@ -1,39 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Women's Day Poster Generator</title>
+<title>Women's Day Poster Generator</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><style>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<style>
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Poppins,sans-serif;
+}
 
 body{
-font-family:Poppins;
-margin:0;
 background:linear-gradient(135deg,#ff4d94,#8a2be2);
 display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
+padding:15px;
 color:white;
 }
 
 .container{
-background:rgba(255,255,255,0.1);
-backdrop-filter:blur(15px);
-padding:25px;
-border-radius:20px;
-width:95%;
+width:100%;
 max-width:900px;
-box-shadow:0 20px 40px rgba(0,0,0,0.3);
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(18px);
+border-radius:20px;
+padding:20px;
+box-shadow:0 20px 50px rgba(0,0,0,0.4);
 }
 
 h1{
 text-align:center;
 font-weight:700;
 margin-bottom:20px;
+font-size:26px;
 }
 
 .main{
@@ -48,14 +50,21 @@ min-width:200px;
 }
 
 .controls button,
-.upload-btn{
+.upload{
 width:100%;
 padding:12px;
 margin-bottom:10px;
 border:none;
-border-radius:10px;
+border-radius:12px;
 cursor:pointer;
 font-weight:600;
+font-size:14px;
+}
+
+.upload{
+background:#ff4d94;
+color:white;
+text-align:center;
 }
 
 button{
@@ -67,10 +76,9 @@ button:hover{
 transform:scale(1.03);
 }
 
-.upload-btn{
-background:#ff4d94;
+.download{
+background:#28a745;
 color:white;
-text-align:center;
 }
 
 .canvas-box{
@@ -82,56 +90,38 @@ canvas{
 width:100%;
 border-radius:15px;
 background:#eee;
+touch-action:none;
 cursor:grab;
 }
 
-.download{
-background:#28a745;
-color:white;
+/* Mobile optimization */
+
+@media(max-width:768px){
+
+.main{
+flex-direction:column;
 }
 
-</style>
-</head>
+h1{
+font-size:22px;
+}
 
-<body>
+}
 
-<div class="container">
-
-<h1>🌸 Women's Day Poster Generator</h1>
-
-<div class="main">
-
-<div class="controls">
-
-<input type="file" id="upload" accept="image/*" hidden>
-
-<div class="upload-btn" onclick="document.getElementById('upload').click()">
+</style></head><body><div class="container"><h1>🌸 Women's Day Poster Generator</h1><div class="main"><div class="controls"><input type="file" id="upload" hidden accept="image/*"><div class="upload" onclick="document.getElementById('upload').click()">
 Upload Photo
-</div>
-
-<button onclick="zoomIn()">Zoom In</button>
+</div><button onclick="zoomIn()">Zoom In</button>
 <button onclick="zoomOut()">Zoom Out</button>
 <button onclick="rotateLeft()">Rotate Left</button>
 <button onclick="rotateRight()">Rotate Right</button>
 <button onclick="resetImage()">Reset</button>
 
-<button class="download" onclick="downloadPoster()">
-Download Poster
-</button>
+<button class="download" onclick="downloadPoster()">Download Poster</button>
 
-</div>
-
-
-<div class="canvas-box">
-
+</div><div class="canvas-box">
 <canvas id="canvas"></canvas>
-
-</div>
-
-</div>
-</div>
-
-<script>
+</div></div>
+</div><script>
 
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
@@ -143,10 +133,7 @@ let userImg=null;
 
 const template=new Image();
 template.crossOrigin="anonymous";
-
-/* REPLACE WITH YOUR WOMENS DAY FRAME */
-template.src="https://i.postimg.cc/J0S0RNzQ/EDC-Template-Spons.png";
-
+template.src="https://i.postimg.cc/43R9WC8Q/20260308-084457.png";
 
 let transform={
 x:540,
@@ -155,25 +142,18 @@ scale:1,
 rotation:0
 };
 
-
 function draw(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-/* draw template background */
-
-ctx.drawImage(template,0,0,canvas.width,canvas.height);
-
-/* draw user image */
+/* draw user photo */
 
 if(userImg){
 
 ctx.save();
 
 ctx.translate(transform.x,transform.y);
-
 ctx.rotate(transform.rotation);
-
 ctx.scale(transform.scale,transform.scale);
 
 ctx.drawImage(userImg,-userImg.width/2,-userImg.height/2);
@@ -182,18 +162,11 @@ ctx.restore();
 
 }
 
-/* women's day text */
+/* draw frame */
 
-ctx.fillStyle="white";
-ctx.font="bold 70px Poppins";
-ctx.textAlign="center";
-ctx.fillText("Happy Women's Day",540,120);
-
-ctx.font="28px Poppins";
-ctx.fillText("Empowering Women • Empowering World",540,170);
+ctx.drawImage(template,0,0,canvas.width,canvas.height);
 
 }
-
 
 document.getElementById("upload").addEventListener("change",function(e){
 
@@ -204,7 +177,6 @@ const reader=new FileReader();
 reader.onload=function(event){
 
 userImg=new Image();
-
 userImg.src=event.target.result;
 
 userImg.onload=function(){
@@ -226,31 +198,23 @@ reader.readAsDataURL(file);
 
 
 function zoomIn(){
-
 transform.scale*=1.1;
 draw();
-
 }
 
 function zoomOut(){
-
 transform.scale*=0.9;
 draw();
-
 }
 
 function rotateLeft(){
-
 transform.rotation-=0.1;
 draw();
-
 }
 
 function rotateRight(){
-
 transform.rotation+=0.1;
 draw();
-
 }
 
 function resetImage(){
@@ -267,10 +231,9 @@ draw();
 }
 
 
-/* drag image */
+/* Dragging */
 
 let dragging=false;
-
 let startX,startY;
 
 canvas.addEventListener("mousedown",e=>{
@@ -278,7 +241,6 @@ canvas.addEventListener("mousedown",e=>{
 dragging=true;
 
 startX=e.offsetX-transform.x;
-
 startY=e.offsetY-transform.y;
 
 });
@@ -288,7 +250,6 @@ canvas.addEventListener("mousemove",e=>{
 if(!dragging)return;
 
 transform.x=e.offsetX-startX;
-
 transform.y=e.offsetY-startY;
 
 draw();
@@ -296,28 +257,58 @@ draw();
 });
 
 canvas.addEventListener("mouseup",()=>dragging=false);
-
 canvas.addEventListener("mouseleave",()=>dragging=false);
 
 
+/* Touch support for mobile */
+
+canvas.addEventListener("touchstart",e=>{
+
+const rect=canvas.getBoundingClientRect();
+
+const x=(e.touches[0].clientX-rect.left)*(canvas.width/rect.width);
+const y=(e.touches[0].clientY-rect.top)*(canvas.height/rect.height);
+
+dragging=true;
+
+startX=x-transform.x;
+startY=y-transform.y;
+
+});
+
+canvas.addEventListener("touchmove",e=>{
+
+if(!dragging)return;
+
+const rect=canvas.getBoundingClientRect();
+
+const x=(e.touches[0].clientX-rect.left)*(canvas.width/rect.width);
+const y=(e.touches[0].clientY-rect.top)*(canvas.height/rect.height);
+
+transform.x=x-startX;
+transform.y=y-startY;
+
+draw();
+
+});
+
+canvas.addEventListener("touchend",()=>dragging=false);
+
+
+/* Download */
 
 function downloadPoster(){
 
 const link=document.createElement("a");
 
 link.download="womens-day-poster.png";
-
-link.href=canvas.toDataURL();
+link.href=canvas.toDataURL("image/png");
 
 link.click();
 
 }
 
-
-
 template.onload=draw;
 
-</script>
-
-</body>
+</script></body>
 </html>
