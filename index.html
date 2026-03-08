@@ -74,7 +74,7 @@ button:hover{
 transform:scale(1.03);
 }
 
-.download{
+download{
 background:#28a745;
 color:white;
 }
@@ -89,6 +89,15 @@ border-radius:15px;
 background:#eee;
 touch-action:none;
 cursor:grab;
+}
+
+footer{
+text-align:center;
+margin-top:20px;
+padding-top:15px;
+border-top:1px solid rgba(255,255,255,0.2);
+font-size:14px;
+opacity:0.8;
 }
 
 @media(max-width:768px){
@@ -112,7 +121,7 @@ Upload Photo
 </div><div class="canvas-box">
 <canvas id="canvas"></canvas>
 </div></div>
-</div><script>
+</div><footer>A Pix Club Creation</footer><script>
 
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
@@ -220,7 +229,6 @@ draw();
 reader.readAsDataURL(file);
 
 });
-
 
 function zoomIn(){ transform.scale*=1.1; draw(); }
 function zoomOut(){ transform.scale*=0.9; draw(); }
