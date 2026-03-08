@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Women's Day Poster Generator</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><style>
+<title>Women's Day Poster Generator</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"><style>
 
 *{
 box-sizing:border-box;
@@ -25,7 +25,7 @@ color:white;
 width:100%;
 max-width:900px;
 background:rgba(255,255,255,0.08);
-backdrop-filter:blur(18px);
+backdrop-filter:blur(20px);
 border-radius:20px;
 padding:20px;
 box-shadow:0 20px 50px rgba(0,0,0,0.4);
@@ -33,7 +33,6 @@ box-shadow:0 20px 50px rgba(0,0,0,0.4);
 
 h1{
 text-align:center;
-font-weight:700;
 margin-bottom:20px;
 font-size:26px;
 }
@@ -55,10 +54,9 @@ width:100%;
 padding:12px;
 margin-bottom:10px;
 border:none;
-border-radius:12px;
-cursor:pointer;
+border-radius:10px;
 font-weight:600;
-font-size:14px;
+cursor:pointer;
 }
 
 .upload{
@@ -83,7 +81,6 @@ color:white;
 
 .canvas-box{
 flex:2;
-position:relative;
 }
 
 canvas{
@@ -94,16 +91,10 @@ touch-action:none;
 cursor:grab;
 }
 
-/* Mobile optimization */
-
 @media(max-width:768px){
 
 .main{
 flex-direction:column;
-}
-
-h1{
-font-size:22px;
 }
 
 }
@@ -135,9 +126,28 @@ const template=new Image();
 template.crossOrigin="anonymous";
 template.src="https://i.postimg.cc/43R9WC8Q/20260308-084457.png";
 
+/* women's quotes */
+
+const quotes=[
+
+"Strong women create strong worlds",
+"Empowered women empower women",
+"Grace in heart, fire in soul",
+"She believed she could, so she did",
+"Courage looks beautiful on her",
+"Fearless minds shape the future",
+"Women rise and the world shines",
+"Bold women build tomorrow",
+"Her strength writes history",
+"Power begins with her"
+
+];
+
+let randomQuote=quotes[Math.floor(Math.random()*quotes.length)];
+
 let transform={
 x:540,
-y:540,
+y:500,
 scale:1,
 rotation:0
 };
@@ -146,7 +156,7 @@ function draw(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-/* draw user photo */
+/* user image */
 
 if(userImg){
 
@@ -166,12 +176,27 @@ ctx.restore();
 
 ctx.drawImage(template,0,0,canvas.width,canvas.height);
 
+/* draw quote ABOVE ribbon */
+
+ctx.save();
+
+ctx.font="bold 38px Poppins";
+ctx.fillStyle="#ffd1e6";
+ctx.textAlign="center";
+ctx.shadowColor="rgba(0,0,0,0.5)";
+ctx.shadowBlur=8;
+
+/* Perfect ribbon placement */
+
+ctx.fillText(randomQuote,540,790);
+
+ctx.restore();
+
 }
 
 document.getElementById("upload").addEventListener("change",function(e){
 
 const file=e.target.files[0];
-
 const reader=new FileReader();
 
 reader.onload=function(event){
@@ -197,31 +222,16 @@ reader.readAsDataURL(file);
 });
 
 
-function zoomIn(){
-transform.scale*=1.1;
-draw();
-}
-
-function zoomOut(){
-transform.scale*=0.9;
-draw();
-}
-
-function rotateLeft(){
-transform.rotation-=0.1;
-draw();
-}
-
-function rotateRight(){
-transform.rotation+=0.1;
-draw();
-}
+function zoomIn(){ transform.scale*=1.1; draw(); }
+function zoomOut(){ transform.scale*=0.9; draw(); }
+function rotateLeft(){ transform.rotation-=0.1; draw(); }
+function rotateRight(){ transform.rotation+=0.1; draw(); }
 
 function resetImage(){
 
 transform={
 x:540,
-y:540,
+y:500,
 scale:1,
 rotation:0
 };
@@ -231,18 +241,15 @@ draw();
 }
 
 
-/* Dragging */
+/* drag */
 
 let dragging=false;
 let startX,startY;
 
 canvas.addEventListener("mousedown",e=>{
-
 dragging=true;
-
 startX=e.offsetX-transform.x;
 startY=e.offsetY-transform.y;
-
 });
 
 canvas.addEventListener("mousemove",e=>{
@@ -260,7 +267,7 @@ canvas.addEventListener("mouseup",()=>dragging=false);
 canvas.addEventListener("mouseleave",()=>dragging=false);
 
 
-/* Touch support for mobile */
+/* mobile drag */
 
 canvas.addEventListener("touchstart",e=>{
 
@@ -295,7 +302,7 @@ draw();
 canvas.addEventListener("touchend",()=>dragging=false);
 
 
-/* Download */
+/* download */
 
 function downloadPoster(){
 
