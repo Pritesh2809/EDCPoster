@@ -1,395 +1,567 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Women's Day Poster Generator</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"><style>
-
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:Poppins,sans-serif;
-}
-
-html,body{
-height:100%;
-}
-
-body{
-background:linear-gradient(135deg,#ff4d94,#8a2be2);
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-align-items:center;
-min-height:100vh;
-padding:15px;
-color:white;
-margin:0;
-}
-
-.wrapper{
-width:100%;
-display:flex;
-justify-content:center;
-flex:1;
-}
-
-.container{
-width:100%;
-max-width:900px;
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
-border-radius:20px;
-padding:20px;
-box-shadow:0 20px 50px rgba(0,0,0,0.4);
-}
-
-h1{
-text-align:center;
-margin-bottom:20px;
-font-size:26px;
-}
-
-.main{
-display:flex;
-gap:20px;
-flex-wrap:wrap;
-}
-
-.controls{
-flex:1;
-min-width:200px;
-}
-
-.controls button,
-.upload{
-width:100%;
-padding:12px;
-margin-bottom:10px;
-border:none;
-border-radius:10px;
-font-weight:600;
-cursor:pointer;
-transition:all 0.3s ease;
-}
-
-.upload{
-background:#ff4d94;
-color:white;
-text-align:center;
-}
-
-.upload:hover{
-background:#ff2d74;
-transform:translateY(-2px);
-}
-
-button{
-background:white;
-color:#333;
-}
-
-button:hover{
-transform:scale(1.03);
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
-}
-
-download{
-background:#28a745;
-color:white;
-}
-
-download:hover{
-background:#218838;
-}
-
-.canvas-box{
-flex:2;
-}
-
-canvas{
-width:100%;
-border-radius:15px;
-background:#eee;
-touch-action:none;
-cursor:grab;
-}
-
-footer{
-width:100%;
-text-align:center;
-padding:20px 15px;
-border-top:2px solid rgba(255,255,255,0.3);
-font-size:14px;
-opacity:0.9;
-background:rgba(0,0,0,0.1);
-margin-top:auto;
-word-wrap:break-word;
-overflow-wrap:break-word;
-}
-
-@media(max-width:768px){
-
-.main{
-flex-direction:column;
-gap:15px;
-}
-
-.container{
-padding:15px;
-}
-
-h1{
-font-size:22px;
-margin-bottom:15px;
-}
-
-footer{
-padding:15px 10px;
-font-size:12px;
-border-top:1.5px solid rgba(255,255,255,0.3);
-}
-
-}
-
-@media(max-width:480px){
-
-.container{
-padding:12px;
-border-radius:15px;
-}
-
-h1{
-font-size:18px;
-margin-bottom:10px;
-}
-
-.controls button,
-.upload{
-padding:10px;
-margin-bottom:8px;
-font-size:13px;
-}
-
-footer{
-padding:12px 8px;
-font-size:11px;
-padding-top:15px;
-padding-bottom:15px;
-}
-
-canvas{
-border-radius:10px;
-}
-
-}
-
-</style></head><body><div class="wrapper"><div class="container"><h1>🌸 Women's Day Poster Generator</h1><div class="main"><div class="controls"><input type="file" id="upload" hidden accept="image/*"><div class="upload" onclick="document.getElementById('upload').click()">
-Upload Photo
-</div><button onclick="zoomIn()">Zoom In</button>
-<button onclick="zoomOut()">Zoom Out</button>
-<button onclick="rotateLeft()">Rotate Left</button>
-<button onclick="rotateRight()">Rotate Right</button>
-<button onclick="resetImage()">Reset</button>
-
-<button class="download" onclick="downloadPoster()">Download Poster</button>
-
-</div><div class="canvas-box">
-<canvas id="canvas"></canvas>
-</div></div></div></div><footer>© A Pix Club Creation</footer><script>
-
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
-
-canvas.width=1080;
-canvas.height=1080;
-
-let userImg=null;
-
-const template=new Image();
-template.crossOrigin="anonymous";
-template.src="https://i.postimg.cc/43R9WC8Q/20260308-084457.png";
-
-/* women's quotes */
-
-const quotes=[
-
-"Strong women create strong worlds",
-"Empowered women empower women",
-"Grace in heart, fire in soul",
-"She believed she could, so she did",
-"Courage looks beautiful on her",
-"Fearless minds shape the future",
-"Women rise and the world shines",
-"Bold women build tomorrow",
-"Her strength writes history",
-"Power begins with her"
-
-];
-
-let randomQuote=quotes[Math.floor(Math.random()*quotes.length)];
-
-let transform={
-x:540,
-y:500,
-scale:1,
-rotation:0
-};
-
-function draw(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-/* user image */
-
-if(userImg){
-
-ctx.save();
-
-ctx.translate(transform.x,transform.y);
-ctx.rotate(transform.rotation);
-ctx.scale(transform.scale,transform.scale);
-
-ctx.drawImage(userImg,-userImg.width/2,-userImg.height/2);
-
-ctx.restore();
-
-}
-
-/* draw frame */
-
-ctx.drawImage(template,0,0,canvas.width,canvas.height);
-
-/* draw quote ABOVE ribbon */
-
-ctx.save();
-ctx.font="bold 38px Poppins";
-ctx.fillStyle="#ffd1e6";
-ctx.textAlign="center";
-ctx.shadowColor="rgba(0,0,0,0.5)";
-ctx.shadowBlur=8;
-
-/* Perfect ribbon placement */
-
-ctx.fillText(randomQuote,540,790);
-
-ctx.restore();
-
-}
-
-document.getElementById("upload").addEventListener("change",function(e){
-
-const file=e.target.files[0];
-const reader=new FileReader();
-
-reader.onload=function(event){
-
-userImg=new Image();
-userImg.src=event.target.result;
-
-userImg.onload=function(){
-
-const scaleX=canvas.width/userImg.width;
-const scaleY=canvas.height/userImg.height;
-
-ttransform.scale=Math.min(scaleX,scaleY);
-
-draw();
-
-};
-
-};
-
-reader.readAsDataURL(file);
-
-});
-
-function zoomIn(){ transform.scale*=1.1; draw(); }
-function zoomOut(){ transform.scale*=0.9; draw(); }
-function rotateLeft(){ transform.rotation-=0.1; draw(); }
-function rotateRight(){ transform.rotation+=0.1; draw(); }
-
-function resetImage(){
-
-transform={
-x:540,
-y:500,
-scale:1,
-rotation:0
-};
-
-draw();
-
-}
-
-
-/* drag */
-
-let dragging=false;
-let startX,startY;
-
-canvas.addEventListener("mousedown",e=>{dragging=true;startX=e.offsetX-transform.x;startY=e.offsetY-transform.y;});
-canvas.addEventListener("mousemove",e=>{
-
-if(!dragging)return;
-
-transform.x=e.offsetX-startX;
-transform.y=e.offsetY-startY;
-
-draw();
-
-});
-canvas.addEventListener("mouseup",()=>dragging=false);
-canvas.addEventListener("mouseleave",()=>dragging=false);
-
-
-/* mobile drag */
-
-canvas.addEventListener("touchstart",e=>{
-
-const rect=canvas.getBoundingClientRect();
-
-const x=(e.touches[0].clientX-rect.left)*(canvas.width/rect.width);
-const y=(e.touches[0].clientY-rect.top)*(canvas.height/rect.height);
-
-dragging=true;
-
-startX=x-transform.x;
-startY=y-transform.y;
-
-});
-canvas.addEventListener("touchmove",e=>{
-
-if(!dragging)return;
-
-const rect=canvas.getBoundingClientRect();
-
-const x=(e.touches[0].clientX-rect.left)*(canvas.width/rect.width);
-const y=(e.touches[0].clientY-rect.top)*(canvas.height/rect.height);
-
-transform.x=x-startX;
-transform.y=y-startY;
-
-draw();
-
-});
-canvas.addEventListener("touchend",()=>dragging=false);
-
-
-/* download */
-
-function downloadPoster(){
-
-const link=document.createElement("a");
-
-link.download="womens-day-poster.png";
-link.href=canvas.toDataURL("image/png");
-
-link.click();
-
-}
-
-template.onload=draw;
-
-</script></body>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>World Photography Day — Poster Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+
+        :root{
+            --bg:#121014;
+            --panel:#1e1a20;
+            --panel-light:#292330;
+            --amber:#f2a93b;
+            --amber-deep:#c9812a;
+            --teal:#4fb3ac;
+            --gold:#d8a94e;
+            --gold-dim:#a4813c;
+            --text-warm:#f5efe6;
+            --text-muted:#a79cae;
+            --film:#0c0a0f;
+            --film-cream:#efe3d0;
+        }
+
+        *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+        html,body{ height:100%; }
+
+        body{
+            font-family:'Space Grotesk',sans-serif;
+            background:
+                    radial-gradient(circle at 20% 0%, #241f28 0%, transparent 55%),
+                    radial-gradient(circle at 100% 100%, #1c2422 0%, transparent 50%),
+                    var(--bg);
+            color:var(--text-warm);
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            padding:14px;
+            padding-top:calc(14px + env(safe-area-inset-top));
+            padding-bottom:calc(14px + env(safe-area-inset-bottom));
+        }
+
+        button{ font-family:inherit; touch-action:manipulation; }
+
+        .stage{ width:100%; max-width:960px; display:flex; justify-content:center; }
+
+        .camera-frame{
+            width:100%;
+            background:var(--panel);
+            border-radius:22px;
+            overflow:hidden;
+            box-shadow:0 25px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset;
+        }
+
+        /* ---------- film strip bars ---------- */
+        .filmstrip{
+            height:14px;
+            background:var(--film);
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:0 10px;
+            overflow:hidden;
+        }
+        .filmstrip span{
+            width:7px; height:7px; min-width:7px;
+            border-radius:2px;
+            background:var(--film-cream);
+            opacity:0.55;
+        }
+
+        /* ---------- header ---------- */
+        header.brand{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:16px 18px 10px;
+        }
+
+        .aperture-badge{
+            position:relative;
+            width:42px; height:42px; min-width:42px;
+            border-radius:50%;
+            background:radial-gradient(circle at 35% 30%, #3a3430, #17151c 70%);
+            box-shadow:0 0 0 2px var(--gold-dim), inset 0 0 8px rgba(0,0,0,0.6);
+            animation:spin 26s linear infinite;
+        }
+        .aperture-badge i{
+            position:absolute; top:50%; left:50%;
+            width:34%; height:70%;
+            background:linear-gradient(var(--amber), var(--teal));
+            opacity:0.85;
+            clip-path:polygon(50% 0%, 100% 25%, 50% 100%, 0% 25%);
+            transform-origin:50% 100%;
+        }
+        .aperture-badge i:nth-child(1){ transform:translate(-50%,-100%) rotate(0deg); }
+        .aperture-badge i:nth-child(2){ transform:translate(-50%,-100%) rotate(60deg); }
+        .aperture-badge i:nth-child(3){ transform:translate(-50%,-100%) rotate(120deg); }
+        .aperture-badge i:nth-child(4){ transform:translate(-50%,-100%) rotate(180deg); }
+        .aperture-badge i:nth-child(5){ transform:translate(-50%,-100%) rotate(240deg); }
+        .aperture-badge i:nth-child(6){ transform:translate(-50%,-100%) rotate(300deg); }
+        @keyframes spin{ to{ transform:rotate(360deg); } }
+
+        .brand-text h1{
+            font-family:'Bebas Neue',sans-serif;
+            font-size:24px;
+            letter-spacing:1px;
+            line-height:1;
+            background:linear-gradient(90deg,var(--amber),var(--teal));
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+        }
+        .brand-text p{
+            font-size:11px;
+            letter-spacing:4px;
+            color:var(--text-muted);
+            margin-top:3px;
+        }
+
+        /* ---------- viewfinder ---------- */
+        .viewfinder{
+            position:relative;
+            margin:0 14px 14px;
+            border-radius:14px;
+            overflow:hidden;
+            background:#000;
+            box-shadow:0 0 0 1px rgba(255,255,255,0.06);
+        }
+
+        canvas{
+            display:block;
+            width:100%;
+            aspect-ratio:1/1;
+            background:#191a1a;
+            touch-action:none;
+            cursor:grab;
+        }
+        canvas:active{ cursor:grabbing; }
+
+        .vf-corner{
+            position:absolute;
+            width:20px; height:20px;
+            border:2px solid var(--gold);
+            opacity:0.8;
+            pointer-events:none;
+        }
+        .vf-corner.tl{ top:8px; left:8px; border-right:none; border-bottom:none; }
+        .vf-corner.tr{ top:8px; right:8px; border-left:none; border-bottom:none; }
+        .vf-corner.bl{ bottom:8px; left:8px; border-right:none; border-top:none; }
+        .vf-corner.br{ bottom:8px; right:8px; border-left:none; border-top:none; }
+
+        .vf-readout{
+            position:absolute;
+            font-size:10px;
+            letter-spacing:1px;
+            color:var(--film-cream);
+            background:rgba(0,0,0,0.35);
+            padding:3px 7px;
+            border-radius:4px;
+            pointer-events:none;
+            font-variant-numeric:tabular-nums;
+        }
+        .vf-readout.rec{ top:12px; left:34px; color:var(--amber); display:flex; align-items:center; gap:5px; }
+        .vf-readout.rec .dot{ width:6px; height:6px; border-radius:50%; background:var(--amber); animation:pulse 1.4s ease-in-out infinite; }
+        @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.25; } }
+        .vf-readout.res{ top:12px; right:34px; }
+        .vf-readout.fstop{ bottom:12px; left:34px; }
+        .vf-readout.iso{ bottom:12px; right:34px; }
+
+        .flash{
+            position:absolute; inset:0;
+            background:#fff;
+            opacity:0;
+            pointer-events:none;
+        }
+        .flash.flash-active{ animation:flashpop 0.4s ease-out; }
+        @keyframes flashpop{ 0%{ opacity:0.9; } 100%{ opacity:0; } }
+
+        .hint{
+            text-align:center;
+            font-size:11px;
+            color:var(--text-muted);
+            margin:-6px 18px 14px;
+            letter-spacing:0.3px;
+        }
+
+        /* ---------- controls ---------- */
+        .controls-panel{ padding:0 14px 6px; }
+
+        .upload-dial{
+            width:100%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            padding:14px;
+            margin-bottom:10px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(135deg,var(--amber),var(--amber-deep));
+            color:#1a1408;
+            font-weight:700;
+            font-size:14px;
+            letter-spacing:0.3px;
+            cursor:pointer;
+            transition:transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow:0 6px 16px rgba(242,169,59,0.3);
+        }
+        .upload-dial:active{ transform:scale(0.97); }
+
+        .dial-grid{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:9px;
+            margin-bottom:16px;
+        }
+
+        .dial{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+            min-height:64px;
+            background:var(--panel-light);
+            border:1px solid rgba(255,255,255,0.06);
+            border-radius:12px;
+            color:var(--text-warm);
+            cursor:pointer;
+            transition:transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+        }
+        .dial svg{ width:19px; height:19px; stroke:var(--teal); }
+        .dial span{ font-size:10.5px; letter-spacing:0.3px; color:var(--text-muted); }
+        .dial:active{ transform:scale(0.94); background:var(--panel); border-color:var(--gold-dim); }
+
+        /* ---------- shutter button ---------- */
+        .shutter-btn{
+            width:100%;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:8px;
+            background:transparent;
+            border:none;
+            padding:6px 14px 20px;
+            cursor:pointer;
+        }
+        .shutter-ring{
+            width:64px; height:64px;
+            border-radius:50%;
+            background:linear-gradient(145deg,#e9c07c,var(--gold-dim));
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 8px 18px rgba(216,169,78,0.35), inset 0 0 0 2px rgba(255,255,255,0.15);
+            transition:transform 0.12s ease;
+        }
+        .shutter-btn:active .shutter-ring{ transform:scale(0.92); }
+        .shutter-center{
+            width:42px; height:42px;
+            border-radius:50%;
+            background:radial-gradient(circle at 35% 30%, #ffcf85, var(--amber) 60%, #8a5a1e 100%);
+            box-shadow:inset 0 0 6px rgba(0,0,0,0.35);
+        }
+        .shutter-label{
+            font-size:12px;
+            letter-spacing:1.5px;
+            text-transform:uppercase;
+            color:var(--text-muted);
+        }
+
+        /* ---------- footer ---------- */
+        footer{
+            width:100%;
+            max-width:960px;
+            text-align:center;
+            padding:16px 10px;
+            font-size:12px;
+            letter-spacing:0.5px;
+            color:var(--text-muted);
+        }
+
+        /* ---------- desktop / wide layout ---------- */
+        @media(min-width:760px){
+            .frame-body{
+                display:flex;
+                gap:20px;
+                padding:4px;
+            }
+            header.brand{ padding:20px 22px 14px; }
+            .frame-body .left{ flex:1.15; padding-left:8px; }
+            .frame-body .right{ flex:1; padding-right:14px; display:flex; flex-direction:column; justify-content:center; }
+            .viewfinder{ margin:0 0 0 14px; }
+            .hint{ margin:8px 14px 0; text-align:left; }
+            .controls-panel{ margin-top:16px; padding:0; }
+            .shutter-btn{ padding:10px 0 6px; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="stage">
+    <div class="camera-frame">
+
+        <div class="filmstrip top">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <header class="brand">
+            <div class="aperture-badge"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="brand-text">
+                <h1>World Photography Day</h1>
+                <p>POSTER STUDIO</p>
+            </div>
+        </header>
+
+        <div class="frame-body">
+            <div class="left">
+                <div class="viewfinder">
+                    <canvas id="canvas"></canvas>
+                    <div class="vf-corner tl"></div>
+                    <div class="vf-corner tr"></div>
+                    <div class="vf-corner bl"></div>
+                    <div class="vf-corner br"></div>
+                    <div class="vf-readout rec"><span class="dot"></span>LIVE</div>
+                    <div class="vf-readout res">1080×1080</div>
+                    <div class="vf-readout fstop">f/2.8</div>
+                    <div class="vf-readout iso">ISO 400</div>
+                    <div class="flash" id="flash"></div>
+                </div>
+                <p class="hint">Drag to reposition · pinch to zoom &amp; rotate on mobile</p>
+            </div>
+
+            <div class="right">
+                <div class="controls-panel">
+                    <input type="file" id="upload" hidden accept="image/*">
+                    <button class="upload-dial" id="uploadBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#1a1408" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                            <path d="M4 7h3l2-3h6l2 3h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"></path>
+                            <circle cx="12" cy="13" r="3.5"></circle>
+                        </svg>
+                        Load Photo
+                    </button>
+
+                    <div class="dial-grid">
+                        <button class="dial" id="zoomOutBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                            <span>Zoom −</span>
+                        </button>
+                        <button class="dial" id="zoomInBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                            <span>Zoom +</span>
+                        </button>
+                        <button class="dial" id="rotResetBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"></path><polyline points="3 4 3 9 8 9"></polyline></svg>
+                            <span>Reset</span>
+                        </button>
+                        <button class="dial" id="rotLeftBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12H9"></path></svg>
+                            <span>Rotate L</span>
+                        </button>
+                        <button class="dial" id="rotRightBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"></path><path d="M20 9H10a6 6 0 0 0 0 12h5"></path></svg>
+                            <span>Rotate R</span>
+                        </button>
+                    </div>
+
+                    <button class="shutter-btn" id="downloadBtn">
+                        <span class="shutter-ring"><span class="shutter-center"></span></span>
+                        <span class="shutter-label">Capture &amp; Download</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="filmstrip bottom">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+    </div>
+</div>
+
+<footer>© A Pix Club Creation</footer>
+
+<script>
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = 1080;
+    canvas.height = 1080;
+
+    let userImg = null;
+
+    const template = new Image();
+    template.crossOrigin = "anonymous";
+    template.src = "https://i.postimg.cc/C1K2xr4x/Chat-GPT-Image-Aug-15-2026-12-30-29-PM.png";
+
+    let transform = { x: 540, y: 500, scale: 1, rotation: 0 };
+
+    function draw(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (userImg){
+            ctx.save();
+            ctx.translate(transform.x, transform.y);
+            ctx.rotate(transform.rotation);
+            ctx.scale(transform.scale, transform.scale);
+            ctx.drawImage(userImg, -userImg.width / 2, -userImg.height / 2);
+            ctx.restore();
+        }
+
+        if (template.complete && template.naturalWidth){
+            ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    function buzz(){ if (navigator.vibrate) navigator.vibrate(12); }
+
+    document.getElementById("uploadBtn").addEventListener("click", () => {
+        document.getElementById("upload").click();
+    });
+
+    document.getElementById("upload").addEventListener("change", function(e){
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+
+        reader.onload = function(event){
+            userImg = new Image();
+            userImg.onload = function(){
+                const scaleX = canvas.width / userImg.width;
+                const scaleY = canvas.height / userImg.height;
+                transform.scale = Math.max(scaleX, scaleY);
+                transform.x = 540;
+                transform.y = 500;
+                transform.rotation = 0;
+                draw();
+            };
+            userImg.src = event.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    function zoomIn(){ transform.scale *= 1.1; draw(); }
+    function zoomOut(){ transform.scale *= 0.9; draw(); }
+    function rotateLeft(){ transform.rotation -= 0.1; draw(); }
+    function rotateRight(){ transform.rotation += 0.1; draw(); }
+
+    function resetImage(){
+        transform = { x: 540, y: 500, scale: 1, rotation: 0 };
+        draw();
+    }
+
+    document.getElementById("zoomInBtn").addEventListener("click", () => { buzz(); zoomIn(); });
+    document.getElementById("zoomOutBtn").addEventListener("click", () => { buzz(); zoomOut(); });
+    document.getElementById("rotLeftBtn").addEventListener("click", () => { buzz(); rotateLeft(); });
+    document.getElementById("rotRightBtn").addEventListener("click", () => { buzz(); rotateRight(); });
+    document.getElementById("rotResetBtn").addEventListener("click", () => { buzz(); resetImage(); });
+
+    /* ---- pointer helpers: map screen coords to the 1080x1080 canvas space ---- */
+    function getPos(clientX, clientY){
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+    }
+
+    /* ---- mouse drag (desktop) ---- */
+    let dragging = false;
+    let startX, startY;
+
+    canvas.addEventListener("mousedown", e => {
+        const p = getPos(e.clientX, e.clientY);
+        dragging = true;
+        startX = p.x - transform.x;
+        startY = p.y - transform.y;
+    });
+    canvas.addEventListener("mousemove", e => {
+        if (!dragging) return;
+        const p = getPos(e.clientX, e.clientY);
+        transform.x = p.x - startX;
+        transform.y = p.y - startY;
+        draw();
+    });
+    window.addEventListener("mouseup", () => { dragging = false; });
+
+    canvas.addEventListener("wheel", e => {
+        e.preventDefault();
+        transform.scale *= e.deltaY < 0 ? 1.05 : 0.95;
+        draw();
+    }, { passive: false });
+
+    /* ---- touch: single-finger drag, two-finger pinch-zoom + rotate ---- */
+    let pinching = false;
+    let pinchStartDist = 0, pinchStartAngle = 0, pinchStartScale = 1, pinchStartRotation = 0;
+
+    function touchDist(t){ return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+    function touchAngle(t){ return Math.atan2(t[1].clientY - t[0].clientY, t[1].clientX - t[0].clientX); }
+
+    canvas.addEventListener("touchstart", e => {
+        e.preventDefault();
+        if (e.touches.length === 2){
+            dragging = false;
+            pinching = true;
+            pinchStartDist = touchDist(e.touches);
+            pinchStartAngle = touchAngle(e.touches);
+            pinchStartScale = transform.scale;
+            pinchStartRotation = transform.rotation;
+        } else if (e.touches.length === 1){
+            pinching = false;
+            const p = getPos(e.touches[0].clientX, e.touches[0].clientY);
+            dragging = true;
+            startX = p.x - transform.x;
+            startY = p.y - transform.y;
+        }
+    }, { passive: false });
+
+    canvas.addEventListener("touchmove", e => {
+        e.preventDefault();
+        if (pinching && e.touches.length === 2){
+            const dist = touchDist(e.touches);
+            const angle = touchAngle(e.touches);
+            transform.scale = pinchStartScale * (dist / pinchStartDist);
+            transform.rotation = pinchStartRotation + (angle - pinchStartAngle);
+            draw();
+        } else if (dragging && e.touches.length === 1){
+            const p = getPos(e.touches[0].clientX, e.touches[0].clientY);
+            transform.x = p.x - startX;
+            transform.y = p.y - startY;
+            draw();
+        }
+    }, { passive: false });
+
+    canvas.addEventListener("touchend", e => {
+        if (e.touches.length < 2) pinching = false;
+        if (e.touches.length === 0) dragging = false;
+    });
+
+    /* ---- download with a little shutter flash ---- */
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+        buzz();
+        const flash = document.getElementById("flash");
+        flash.classList.add("flash-active");
+        setTimeout(() => flash.classList.remove("flash-active"), 400);
+
+        setTimeout(() => {
+            const link = document.createElement("a");
+            link.download = "world-photography-day-poster.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }, 120);
+    });
+
+    template.onload = draw;
+    template.onerror = draw;
+    draw();
+
+</script>
+</body>
 </html>
